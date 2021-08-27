@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {
   MatDialog,
   MatPaginator,
@@ -16,7 +16,7 @@ import {ConfirmationModalComponent} from '../confirmation-modal/confirmation-mod
   templateUrl: './customers-table.component.html',
   styleUrls: ['./customers-table.component.scss']
 })
-export class CustomersTableComponent implements OnInit {
+export class CustomersTableComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
 
@@ -34,6 +34,10 @@ export class CustomersTableComponent implements OnInit {
               public dialog: MatDialog) { }
 
   ngOnInit() {
+    this.loadCustomers();
+  }
+
+  ngAfterViewInit(): void {
     this.loadCustomers();
   }
 
@@ -67,7 +71,7 @@ export class CustomersTableComponent implements OnInit {
   }
 
   openDialog(customer: Customer) {
-    const dialogRef = this.dialog.open(ConfirmationModalComponent, {
+    this.dialog.open(ConfirmationModalComponent, {
       width: '250px',
       data: {
         customer,
