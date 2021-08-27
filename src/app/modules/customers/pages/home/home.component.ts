@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import {CustomersService} from '../../../shared/services/customers/customers.service';
 
 @Component({
   selector: 'app-home',
@@ -8,12 +7,8 @@ import {CustomersService} from '../../../shared/services/customers/customers.ser
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private customersService: CustomersService) { }
+  constructor() { }
 
-  ngOnInit() {
-    this.customersService.getCustomers().subscribe((res: any) => {
-      console.log('CUSTOMERS RESPONSE: ', res);
-    });
-  }
+  ngOnInit() {}
 
 }

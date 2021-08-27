@@ -1,7 +1,15 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {MatPaginator, MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition, MatTableDataSource} from '@angular/material';
+import {
+  MatDialog,
+  MatPaginator,
+  MatSnackBar,
+  MatSnackBarHorizontalPosition,
+  MatSnackBarVerticalPosition,
+  MatTableDataSource
+} from '@angular/material';
 import Customer from '../../../shared/models/customer';
 import {CustomersService} from '../../../shared/services/customers/customers.service';
+import {ConfirmationModalComponent} from '../confirmation-modal/confirmation-modal.component';
 
 @Component({
   selector: 'app-customers-table',
@@ -21,7 +29,9 @@ export class CustomersTableComponent implements OnInit {
   horizontalPosition: MatSnackBarHorizontalPosition = 'center';
   verticalPosition: MatSnackBarVerticalPosition = 'top';
 
-  constructor(private customersService: CustomersService, private snackBar: MatSnackBar) { }
+  constructor(private customersService: CustomersService,
+              private snackBar: MatSnackBar,
+              public dialog: MatDialog) { }
 
   ngOnInit() {
     this.loadCustomers();
@@ -46,16 +56,26 @@ export class CustomersTableComponent implements OnInit {
       {duration: 5000,  horizontalPosition: this.horizontalPosition, verticalPosition: this.verticalPosition});
   }
 
-  // openDialog(customer: Customer) {
-  //   const dialogRef = this.dialog.open(ConfirmationModalComponent, {
-  //     width: '250px',
-  //     data: {
-  //       student,
-  //       title: 'Eliminar Cliente',
-  //       message: `Seguro que desea eliminar a ${customer.name} ${customer.lastName} ?`,
-  //       onConfirm: (studentId) => this.deleteStudent(studentId)
-  //     }
-  //   });
-  // }
+  deleteCustomer(id: number) {
+    this.customersService.deleteCustomer(id).subscribe( (resp: any) => {
+        this.loadCustomers();
+        this.openSnackBar('Cliente Eliminado', 'Ok');
+      },
+      (err) => {
+        this.openSnackBar('Error al eliminar cliente, inténtelo más tarde.', 'Ok');
+      });
+  }
+
+  openDialog(customer: Customer) {
+    const dialogRef = this.dialog.open(ConfirmationModalComponent, {
+      width: '250px',
+      data: {
+        customer,
+        title: 'Eliminar Cliente',
+        message: `Seguro que desea eliminar a ${customer.name} ${customer.lastName} ?`,
+        onConfirm: (customerId) => this.deleteCustomer(customerId)
+      }
+    });
+  }
 
 }

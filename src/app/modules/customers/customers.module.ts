@@ -14,9 +14,17 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { CustomersRoutingModule } from './customers-routing.module';
 import { HomeComponent } from './pages/home/home.component';
 import { CustomersTableComponent } from './components/customers-table/customers-table.component';
+import { ConfirmationModalComponent } from './components/confirmation-modal/confirmation-modal.component';
+import { CustomerFormComponent } from './components/customer-form/customer-form.component';
+import { CustomerDetailsComponent } from './pages/customer-details/customer-details.component';
 
 @NgModule({
-  declarations: [HomeComponent, CustomersTableComponent],
+  declarations: [
+    HomeComponent,
+    CustomersTableComponent,
+    ConfirmationModalComponent,
+    CustomerFormComponent,
+    CustomerDetailsComponent],
   imports: [
     CommonModule,
     CustomersRoutingModule,
@@ -29,6 +37,7 @@ import { CustomersTableComponent } from './components/customers-table/customers-
     MatSnackBarModule,
     MatDialogModule,
     MatProgressSpinnerModule
-  ]
+  ],
+   entryComponents: [ConfirmationModalComponent]
 })
 export class CustomersModule { }
