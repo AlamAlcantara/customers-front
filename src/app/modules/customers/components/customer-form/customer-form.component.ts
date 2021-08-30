@@ -44,10 +44,13 @@ export class CustomerFormComponent implements OnInit {
       // tslint:disable-next-line:radix
       this.customersService.getCustomerById( Number.parseInt(id) )
         .subscribe((resp: any) => {
-            if (!resp.error) {
+            if (resp != null && !resp.error) {
               this.customer = resp;
               this.buildFormGroup();
               this.loadAddressesIntoForm();
+            } else {
+              this.router.navigate(['/']);
+              this.openSnackBar('Cliente no encontrado', 'Ok');
             }
           },
           (err) => {

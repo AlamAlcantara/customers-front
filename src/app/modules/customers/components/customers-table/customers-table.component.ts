@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {
   MatDialog,
   MatPaginator,
@@ -20,10 +20,14 @@ export class CustomersTableComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
 
+  @Input() set customers(customers: Customer[]) {
+    this.customersData = customers;
+    this.fillTable();
+  }
+
+  customersData: Customer [];
   displayedColumns: string[] = ['name', 'lastName', 'email', 'actions'];
-  customers: Customer[];
-  dataSource = new MatTableDataSource<Customer>(this.customers);
-  loadingCustomers = false;
+  dataSource = new MatTableDataSource<Customer>(this.customersData);
 
   // Snackbar position
   horizontalPosition: MatSnackBarHorizontalPosition = 'center';
@@ -34,25 +38,16 @@ export class CustomersTableComponent implements OnInit, AfterViewInit {
               public dialog: MatDialog) { }
 
   ngOnInit() {
-    this.loadCustomers();
+    this.fillTable();
   }
 
   ngAfterViewInit(): void {
-    this.loadCustomers();
+    this.fillTable();
   }
 
-  loadCustomers() {
-    this.loadingCustomers = true;
-
-    this.customersService.getCustomers().subscribe((res: any) => {
-      this.loadingCustomers = false;
-      this.customers = res;
-      this.dataSource = new MatTableDataSource<Customer>(this.customers);
-      this.dataSource.paginator = this.paginator;
-    }, (err) => {
-      this.loadingCustomers = false;
-      this.openSnackBar('Error al cargar clientes, inténtelo más tarde.', 'Ok');
-    });
+  fillTable() {
+    this.dataSource = new MatTableDataSource<Customer>(this.customersData);
+    this.dataSource.paginator = this.paginator;
   }
 
   openSnackBar(message: string, actionText: string) {
@@ -62,7 +57,9 @@ export class CustomersTableComponent implements OnInit, AfterViewInit {
 
   deleteCustomer(id: number) {
     this.customersService.deleteCustomer(id).subscribe( (resp: any) => {
-        this.loadCustomers();
+        const index = this.customersData.findIndex(c => c.id === id);
+        this.customersData.splice(index, 1);
+        this.fillTable();
         this.openSnackBar('Cliente Eliminado', 'Ok');
       },
       (err) => {
